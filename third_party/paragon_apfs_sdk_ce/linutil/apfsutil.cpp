@@ -396,12 +396,14 @@ EnumerateFolder(
 
 static void
 PrintHexName(
-    IN const char* Name
+    IN const unsigned short* Name
     )
 {
-  const unsigned char* p = reinterpret_cast<const unsigned char*>(Name);
-  while ( *p )
-    fprintf( stdout, "%02x", static_cast<unsigned int>(*p++) );
+  char Utf8Name[4 * 257];
+  size_t Length = utf8_wcstombs( Utf8Name, sizeof(Utf8Name), Name, 257 );
+  for ( size_t i = 0; i < Length; ++i )
+    fprintf( stdout, "%02x",
+             static_cast<unsigned int>(static_cast<unsigned char>(Utf8Name[i])) );
 }
 
 static int
@@ -422,7 +424,7 @@ EnumerateFolderMachine(
     const char Type = U_ISDIR(Info.Mode) ? 'D' :
                       U_ISLNK(Info.Mode) ? 'L' : 'F';
     fprintf( stdout, "ENTRY\t%c\t%" PLL "u\t", Type, Info.FileSize );
-    PrintHexName( static_cast<const char*>(Info.Name) );
+    PrintHexName( Info.Name );
     fprintf( stdout, "\n" );
   }
 
