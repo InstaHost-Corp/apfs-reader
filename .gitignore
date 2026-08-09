@@ -1,0 +1,11 @@
+.vs/
+build/
+dist/
+openssl-*/
+openssl.tar.gz
+ParserTests.exe
+src/APFSReader/bin/
+src/APFSReader/obj/
+*.user
+*.suo
+
