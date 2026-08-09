@@ -29,12 +29,12 @@ All notable changes to APFS Reader for Windows.
 - Applied the InstaHost desktop theme to the browser window.
 - Shipped the complete dependency licences with every portable package.
 
-## 1.0.1 — 2026-08-08
+## 1.0.1 — 2026-08-09
 
 - Corrected the Windows parser test paths and the .NET 4 reference assemblies
   used by the release build.
 
-## 1.0.0 — 2026-08-08
+## 1.0.0 — 2026-08-09
 
 - First public release: portable, read-only APFS browsing and extraction for
   Windows 7 SP1 and newer, in 32-bit and 64-bit builds.
