@@ -54,7 +54,7 @@ jobs:
             -DOPENSSL_ROOT_DIR="$env:GITHUB_WORKSPACE\openssl-${{ matrix.arch }}" `
             -DOPENSSL_USE_STATIC_LIBS=TRUE `
             -DAPFSUTIL_FORCE_RO=TRUE `
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build build/backend-${{ matrix.arch }}
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -100,4 +100,3 @@ jobs:
         with:
           generate_release_notes: true
           files: dist/*.zip
-
