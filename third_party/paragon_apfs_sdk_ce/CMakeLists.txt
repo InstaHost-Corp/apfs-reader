@@ -361,6 +361,9 @@ add_executable(${_project_name} ${_linutil_sources}
 
 if(OPENSSL_FOUND)
     target_link_libraries(${_project_name} ${OPENSSL_LIBRARIES})
+    if(WIN32)
+        target_link_libraries(${_project_name} crypt32 ws2_32)
+    endif()
 endif()
 
 if(MSVC)
