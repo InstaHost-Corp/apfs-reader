@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("APFS Reader for Windows")]
 [assembly: AssemblyDescription("Read-only APFS browser and extractor")]
-[assembly: AssemblyCompany("MyTechie")]
+[assembly: AssemblyCompany("Patrick Hamid")]
 [assembly: AssemblyProduct("APFS Reader for Windows")]
 [assembly: AssemblyCopyright("Copyright (c) 2026 Patrick Hamid")]
 [assembly: ComVisible(false)]
