@@ -10,6 +10,16 @@ namespace APFSReader
 {
     internal sealed class MainForm : Form
     {
+        private static readonly Color BackgroundColor = Color.FromArgb(4, 6, 15);
+        private static readonly Color ElevatedColor = Color.FromArgb(10, 16, 48);
+        private static readonly Color SurfaceColor = Color.FromArgb(20, 28, 64);
+        private static readonly Color SurfaceSoftColor = Color.FromArgb(25, 35, 76);
+        private static readonly Color BorderColor = Color.FromArgb(47, 64, 112);
+        private static readonly Color TextColor = Color.FromArgb(234, 240, 255);
+        private static readonly Color MutedColor = Color.FromArgb(147, 160, 207);
+        private static readonly Color AccentColor = Color.FromArgb(34, 211, 238);
+        private static readonly Color AccentHoverColor = Color.FromArgb(168, 85, 247);
+
         private readonly TextBox source = new TextBox();
         private readonly TextBox password = new TextBox();
         private readonly NumericUpDown volume = new NumericUpDown();
@@ -26,9 +36,13 @@ namespace APFSReader
         public MainForm()
         {
             Text = "APFS Reader for Windows";
-            MinimumSize = new Size(760, 480);
-            Size = new Size(940, 620);
+            MinimumSize = new Size(820, 560);
+            Size = new Size(1020, 700);
             StartPosition = FormStartPosition.CenterScreen;
+            AutoScaleMode = AutoScaleMode.Dpi;
+            BackColor = BackgroundColor;
+            ForeColor = TextColor;
+            Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             BuildLayout();
         }
 
@@ -36,81 +50,267 @@ namespace APFSReader
         {
             TableLayoutPanel root = new TableLayoutPanel();
             root.Dock = DockStyle.Fill;
-            root.Padding = new Padding(10);
-            root.ColumnCount = 4;
+            root.BackColor = BackgroundColor;
+            root.Padding = new Padding(24, 18, 24, 20);
+            root.ColumnCount = 1;
             root.RowCount = 5;
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 142));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 54));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 54));
 
+            TableLayoutPanel header = new TableLayoutPanel();
+            header.Dock = DockStyle.Fill;
+            header.ColumnCount = 3;
+            header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 58));
+            header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            Label mark = new Label();
+            mark.Text = "AP";
+            mark.TextAlign = ContentAlignment.MiddleCenter;
+            mark.Size = new Size(46, 46);
+            mark.Margin = new Padding(0, 3, 12, 0);
+            mark.BackColor = AccentColor;
+            mark.ForeColor = BackgroundColor;
+            mark.Font = new Font(Font.FontFamily, 12F, FontStyle.Bold);
+            header.Controls.Add(mark, 0, 0);
+
+            Panel heading = new Panel();
+            heading.Dock = DockStyle.Fill;
+            Label eyebrow = CreateLabel("INSTA.HOST TOOLING", 8F, FontStyle.Bold, AccentColor);
+            eyebrow.Location = new Point(0, 4);
+            eyebrow.AutoSize = true;
+            Label title = CreateLabel("APFS Reader", 16F, FontStyle.Bold, TextColor);
+            title.Location = new Point(-1, 23);
+            title.AutoSize = true;
+            heading.Controls.Add(eyebrow);
+            heading.Controls.Add(title);
+            header.Controls.Add(heading, 1, 0);
+
+            Label mode = CreateLabel("READ ONLY", 8F, FontStyle.Bold, AccentColor);
+            mode.AutoSize = false;
+            mode.Size = new Size(86, 28);
+            mode.TextAlign = ContentAlignment.MiddleCenter;
+            mode.BackColor = SurfaceSoftColor;
+            mode.Margin = new Padding(0, 10, 0, 0);
+            header.Controls.Add(mode, 2, 0);
+            root.Controls.Add(header, 0, 0);
+
+            Panel sourceCard = CreateCard();
+            sourceCard.Margin = new Padding(0, 4, 0, 10);
+            TableLayoutPanel sourceLayout = new TableLayoutPanel();
+            sourceLayout.Dock = DockStyle.Fill;
+            sourceLayout.ColumnCount = 4;
+            sourceLayout.RowCount = 3;
+            sourceLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
+            sourceLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            sourceLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            sourceLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            sourceLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
+            sourceLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
+            sourceLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
+            Label sourceHeading = CreateLabel("OPEN APFS SOURCE", 8F, FontStyle.Bold, MutedColor);
+            sourceHeading.Dock = DockStyle.Fill;
+            sourceHeading.TextAlign = ContentAlignment.MiddleLeft;
+            sourceLayout.Controls.Add(sourceHeading, 0, 0);
+            sourceLayout.SetColumnSpan(sourceHeading, 4);
+
+            sourceLayout.Controls.Add(CreateFieldLabel("SOURCE"), 0, 1);
             source.Dock = DockStyle.Fill;
-            browse.Text = "Browse...";
-            browse.AutoSize = true;
+            source.Margin = new Padding(0, 4, 10, 4);
+            StyleInput(source);
+            browse.Text = "Browse";
             browse.Click += BrowseClick;
+            StyleButton(browse, false);
             open.Text = "Open";
-            open.AutoSize = true;
             open.Click += delegate { LoadFolder("/"); };
-            root.Controls.Add(new Label { Text = "APFS source:", AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
-            root.Controls.Add(source, 1, 0);
-            root.Controls.Add(browse, 2, 0);
-            root.Controls.Add(open, 3, 0);
+            StyleButton(open, true);
+            sourceLayout.Controls.Add(source, 1, 1);
+            sourceLayout.Controls.Add(browse, 2, 1);
+            sourceLayout.Controls.Add(open, 3, 1);
 
+            sourceLayout.Controls.Add(CreateFieldLabel("PASSWORD"), 0, 2);
             password.UseSystemPasswordChar = true;
             password.Dock = DockStyle.Fill;
+            password.Margin = new Padding(0, 4, 10, 4);
+            StyleInput(password);
             volume.Minimum = 1;
             volume.Maximum = 100;
             volume.Value = 1;
-            volume.Width = 55;
-            root.Controls.Add(new Label { Text = "Password:", AutoSize = true, Anchor = AnchorStyles.Left }, 0, 1);
-            root.Controls.Add(password, 1, 1);
-            root.Controls.Add(new Label { Text = "Volume:", AutoSize = true, Anchor = AnchorStyles.Right }, 2, 1);
-            root.Controls.Add(volume, 3, 1);
+            volume.Width = 72;
+            volume.Height = 30;
+            volume.Margin = new Padding(8, 4, 0, 4);
+            volume.BackColor = ElevatedColor;
+            volume.ForeColor = TextColor;
+            sourceLayout.Controls.Add(password, 1, 2);
+            Label volumeLabel = CreateFieldLabel("VOLUME");
+            volumeLabel.Margin = new Padding(4, 0, 0, 0);
+            sourceLayout.Controls.Add(volumeLabel, 2, 2);
+            sourceLayout.Controls.Add(volume, 3, 2);
+            sourceCard.Controls.Add(sourceLayout);
+            root.Controls.Add(sourceCard, 0, 1);
 
-            FlowLayoutPanel navigation = new FlowLayoutPanel();
-            navigation.AutoSize = true;
+            TableLayoutPanel navigation = new TableLayoutPanel();
             navigation.Dock = DockStyle.Fill;
-            up.Text = "Up";
-            up.AutoSize = true;
+            navigation.Margin = new Padding(0, 2, 0, 8);
+            navigation.ColumnCount = 2;
+            navigation.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 76));
+            navigation.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            up.Text = "<  Up";
             up.Click += delegate { LoadFolder(ParentPath(path)); };
+            StyleButton(up, false);
+            up.Margin = new Padding(0, 2, 10, 2);
             currentPath.ReadOnly = true;
-            currentPath.Width = 560;
+            currentPath.Dock = DockStyle.Fill;
+            currentPath.Margin = new Padding(0, 2, 0, 2);
             currentPath.Text = "/";
+            currentPath.Font = new Font("Consolas", 9F);
+            StyleInput(currentPath);
             navigation.Controls.Add(up);
             navigation.Controls.Add(currentPath);
             root.Controls.Add(navigation, 0, 2);
-            root.SetColumnSpan(navigation, 4);
 
+            Panel fileCard = CreateCard();
+            fileCard.Margin = new Padding(0);
+            fileCard.Padding = new Padding(1);
             files.Dock = DockStyle.Fill;
             files.View = View.Details;
             files.FullRowSelect = true;
             files.MultiSelect = true;
-            files.Columns.Add("Name", 500);
-            files.Columns.Add("Type", 100);
-            files.Columns.Add("Size", 130, HorizontalAlignment.Right);
+            files.HideSelection = false;
+            files.BorderStyle = BorderStyle.None;
+            files.BackColor = SurfaceColor;
+            files.ForeColor = TextColor;
+            files.Font = new Font("Segoe UI", 9.25F);
+            files.OwnerDraw = true;
+            files.Columns.Add("NAME", 590);
+            files.Columns.Add("TYPE", 120);
+            files.Columns.Add("SIZE", 140, HorizontalAlignment.Right);
+            files.DrawColumnHeader += DrawColumnHeader;
+            files.DrawItem += delegate { };
+            files.DrawSubItem += DrawSubItem;
+            files.Resize += delegate { ResizeFileColumns(); };
             files.DoubleClick += FilesDoubleClick;
-            root.Controls.Add(files, 0, 3);
-            root.SetColumnSpan(files, 4);
+            fileCard.Controls.Add(files);
+            root.Controls.Add(fileCard, 0, 3);
 
-            FlowLayoutPanel footer = new FlowLayoutPanel();
+            TableLayoutPanel footer = new TableLayoutPanel();
             footer.Dock = DockStyle.Fill;
-            footer.AutoSize = true;
-            extract.Text = "Extract selected...";
-            extract.AutoSize = true;
+            footer.Margin = new Padding(0, 10, 0, 0);
+            footer.ColumnCount = 2;
+            footer.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            footer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            extract.Text = "Extract selected";
             extract.Click += ExtractClick;
-            status.AutoSize = true;
-            status.Margin = new Padding(12, 7, 0, 0);
+            StyleButton(extract, true);
+            status.Dock = DockStyle.Fill;
+            status.ForeColor = MutedColor;
+            status.TextAlign = ContentAlignment.MiddleLeft;
+            status.Margin = new Padding(14, 0, 0, 0);
             status.Text = "Select an APFS partition image or enter a device path such as \\\\.\\PhysicalDrive1.";
             footer.Controls.Add(extract);
             footer.Controls.Add(status);
             root.Controls.Add(footer, 0, 4);
-            root.SetColumnSpan(footer, 4);
             Controls.Add(root);
+            Shown += delegate { ResizeFileColumns(); };
+        }
+
+        private void ResizeFileColumns()
+        {
+            if (files.Columns.Count != 3)
+                return;
+            files.Columns[0].Width = Math.Max(300, files.ClientSize.Width - 260);
+            files.Columns[1].Width = 120;
+            files.Columns[2].Width = 140;
+        }
+
+        private static Panel CreateCard()
+        {
+            Panel panel = new Panel();
+            panel.Dock = DockStyle.Fill;
+            panel.Padding = new Padding(16, 10, 16, 10);
+            panel.BackColor = SurfaceColor;
+            panel.Paint += delegate(object sender, PaintEventArgs e) {
+                Control control = (Control)sender;
+                using (Pen pen = new Pen(BorderColor))
+                    e.Graphics.DrawRectangle(pen, 0, 0, control.Width - 1, control.Height - 1);
+            };
+            return panel;
+        }
+
+        private static Label CreateLabel(string text, float size, FontStyle style, Color color)
+        {
+            Label label = new Label();
+            label.Text = text;
+            label.Font = new Font("Segoe UI", size, style);
+            label.ForeColor = color;
+            label.BackColor = Color.Transparent;
+            return label;
+        }
+
+        private static Label CreateFieldLabel(string text)
+        {
+            Label label = CreateLabel(text, 8F, FontStyle.Bold, MutedColor);
+            label.Dock = DockStyle.Fill;
+            label.TextAlign = ContentAlignment.MiddleLeft;
+            return label;
+        }
+
+        private static void StyleInput(TextBox input)
+        {
+            input.BackColor = ElevatedColor;
+            input.ForeColor = TextColor;
+            input.BorderStyle = BorderStyle.FixedSingle;
+        }
+
+        private static void StyleButton(Button button, bool primary)
+        {
+            button.AutoSize = false;
+            button.Size = new Size(primary ? 112 : 88, 32);
+            button.Margin = new Padding(8, 4, 0, 4);
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 1;
+            button.FlatAppearance.BorderColor = primary ? AccentColor : BorderColor;
+            button.FlatAppearance.MouseOverBackColor = primary ? Color.FromArgb(89, 229, 243) : SurfaceSoftColor;
+            button.FlatAppearance.MouseDownBackColor = AccentHoverColor;
+            button.BackColor = primary ? AccentColor : ElevatedColor;
+            button.ForeColor = primary ? BackgroundColor : TextColor;
+            button.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            button.UseVisualStyleBackColor = false;
+        }
+
+        private static void DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            using (SolidBrush background = new SolidBrush(ElevatedColor))
+                e.Graphics.FillRectangle(background, e.Bounds);
+            TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
+            flags |= e.Header.TextAlign == HorizontalAlignment.Right
+                ? TextFormatFlags.Right : TextFormatFlags.Left;
+            Rectangle textBounds = new Rectangle(e.Bounds.X + 10, e.Bounds.Y,
+                e.Bounds.Width - 20, e.Bounds.Height);
+            TextRenderer.DrawText(e.Graphics, e.Header.Text, new Font("Segoe UI", 8F, FontStyle.Bold),
+                textBounds, MutedColor, flags);
+            using (Pen pen = new Pen(BorderColor))
+                e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1,
+                    e.Bounds.Right, e.Bounds.Bottom - 1);
+        }
+
+        private static void DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+            bool selected = e.Item.Selected;
+            Color rowColor = e.ItemIndex % 2 == 0 ? SurfaceColor : Color.FromArgb(17, 24, 57);
+            using (SolidBrush background = new SolidBrush(selected ? SurfaceSoftColor : rowColor))
+                e.Graphics.FillRectangle(background, e.Bounds);
+
+            TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
+            flags |= e.Header.TextAlign == HorizontalAlignment.Right
+                ? TextFormatFlags.Right : TextFormatFlags.Left;
+            Rectangle textBounds = new Rectangle(e.Bounds.X + 10, e.Bounds.Y,
+                e.Bounds.Width - 20, e.Bounds.Height);
+            TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.Font, textBounds,
+                selected ? AccentColor : TextColor, flags);
         }
 
         private void BrowseClick(object sender, EventArgs e)
