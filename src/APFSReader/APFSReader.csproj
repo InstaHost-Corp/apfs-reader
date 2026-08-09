@@ -39,8 +39,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApfsBackend.cs" />
+    <Compile Include="AboutDialog.cs" />
+    <Compile Include="BuildInfo.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Theme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

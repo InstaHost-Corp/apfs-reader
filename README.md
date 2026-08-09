@@ -27,6 +27,21 @@ Reading a physical device normally requires running the application as an
 administrator. Use the correct APFS partition device or a partition image;
 an image of an entire GPT disk is not automatically partition-scanned.
 
+## About and support
+
+Choose **About** at the top right of the window to see the version, build date,
+publisher and the SHA-256 of the running executable, so a download can be
+checked against the published checksum without a network connection.
+
+APFS Reader is freeware. The About window and the footer of the main window
+link to the author on LinkedIn, the free tools page, the privacy statement and
+a donation page for anyone who would like to support the tool:
+
+- Author: <https://linkedin.com/in/phamid>
+- More free tools: <https://insta.host/tools>
+- Privacy: <https://insta.host/privacy>
+- Buy me a coffee: <https://coffee.insta.host>
+
 ## Requirements and limitations
 
 - Windows 7 SP1 or newer with .NET Framework 4.0

@@ -10,15 +10,15 @@ namespace APFSReader
 {
     internal sealed class MainForm : Form
     {
-        private static readonly Color BackgroundColor = Color.FromArgb(4, 6, 15);
-        private static readonly Color ElevatedColor = Color.FromArgb(10, 16, 48);
-        private static readonly Color SurfaceColor = Color.FromArgb(20, 28, 64);
-        private static readonly Color SurfaceSoftColor = Color.FromArgb(25, 35, 76);
-        private static readonly Color BorderColor = Color.FromArgb(47, 64, 112);
-        private static readonly Color TextColor = Color.FromArgb(234, 240, 255);
-        private static readonly Color MutedColor = Color.FromArgb(147, 160, 207);
-        private static readonly Color AccentColor = Color.FromArgb(34, 211, 238);
-        private static readonly Color AccentHoverColor = Color.FromArgb(168, 85, 247);
+        private static readonly Color BackgroundColor = Theme.Background;
+        private static readonly Color ElevatedColor = Theme.Elevated;
+        private static readonly Color SurfaceColor = Theme.Surface;
+        private static readonly Color SurfaceSoftColor = Theme.SurfaceSoft;
+        private static readonly Color BorderColor = Theme.Border;
+        private static readonly Color TextColor = Theme.Text;
+        private static readonly Color MutedColor = Theme.Muted;
+        private static readonly Color AccentColor = Theme.Accent;
+        private static readonly Color AccentHoverColor = Theme.AccentHover;
 
         private readonly TextBox source = new TextBox();
         private readonly TextBox password = new TextBox();
@@ -29,6 +29,7 @@ namespace APFSReader
         private readonly Button open = new Button();
         private readonly Button up = new Button();
         private readonly Button extract = new Button();
+        private readonly Button about = new Button();
         private readonly Label status = new Label();
         private readonly ApfsBackend backend = new ApfsBackend();
         private string path = "/";
@@ -63,9 +64,10 @@ namespace APFSReader
 
             TableLayoutPanel header = new TableLayoutPanel();
             header.Dock = DockStyle.Fill;
-            header.ColumnCount = 3;
+            header.ColumnCount = 4;
             header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 58));
             header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             Label mark = new Label();
             mark.Text = "AP";
@@ -96,6 +98,13 @@ namespace APFSReader
             mode.BackColor = SurfaceSoftColor;
             mode.Margin = new Padding(0, 10, 0, 0);
             header.Controls.Add(mode, 2, 0);
+
+            about.Text = "About";
+            about.Click += delegate { ShowAbout(); };
+            StyleButton(about, false);
+            about.Size = new Size(76, 28);
+            about.Margin = new Padding(10, 10, 0, 0);
+            header.Controls.Add(about, 3, 0);
             root.Controls.Add(header, 0, 0);
 
             Panel sourceCard = CreateCard();
@@ -199,9 +208,10 @@ namespace APFSReader
             TableLayoutPanel footer = new TableLayoutPanel();
             footer.Dock = DockStyle.Fill;
             footer.Margin = new Padding(0, 10, 0, 0);
-            footer.ColumnCount = 2;
+            footer.ColumnCount = 3;
             footer.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             footer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            footer.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             extract.Text = "Extract selected";
             extract.Click += ExtractClick;
             StyleButton(extract, true);
@@ -210,11 +220,54 @@ namespace APFSReader
             status.TextAlign = ContentAlignment.MiddleLeft;
             status.Margin = new Padding(14, 0, 0, 0);
             status.Text = "Select an APFS partition image or enter a device path such as \\\\.\\PhysicalDrive1.";
-            footer.Controls.Add(extract);
-            footer.Controls.Add(status);
+            footer.Controls.Add(extract, 0, 0);
+            footer.Controls.Add(status, 1, 0);
+            footer.Controls.Add(BuildFooterLinks(), 2, 0);
             root.Controls.Add(footer, 0, 4);
             Controls.Add(root);
             Shown += delegate { ResizeFileColumns(); };
+        }
+
+        /// <summary>
+        /// The freeware notice and the author and donation links, always visible so the tool can be
+        /// credited and supported without opening the About window.
+        /// </summary>
+        private static FlowLayoutPanel BuildFooterLinks()
+        {
+            FlowLayoutPanel links = new FlowLayoutPanel();
+            links.AutoSize = true;
+            links.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            links.Anchor = AnchorStyles.Right;
+            links.BackColor = Color.Transparent;
+            links.FlowDirection = FlowDirection.LeftToRight;
+            links.WrapContents = false;
+            links.Margin = new Padding(14, 8, 0, 0);
+
+            Label freeware = CreateLabel("Freeware", 8.5F, FontStyle.Regular, MutedColor);
+            freeware.AutoSize = true;
+            freeware.Margin = new Padding(0, 3, 0, 0);
+            links.Controls.Add(freeware);
+            links.Controls.Add(CreateSeparator());
+            links.Controls.Add(AboutDialog.NewLink("Patrick Hamid", BuildInfo.AuthorUrl,
+                "Open linkedin.com/in/phamid in your browser"));
+            links.Controls.Add(CreateSeparator());
+            links.Controls.Add(AboutDialog.NewLink("\u2615 Buy me a coffee", BuildInfo.DonationUrl,
+                "Support this free tool - opens " + BuildInfo.DonationUrl));
+            return links;
+        }
+
+        private static Label CreateSeparator()
+        {
+            Label separator = CreateLabel("\u00B7", 9F, FontStyle.Regular, BorderColor);
+            separator.AutoSize = true;
+            separator.Margin = new Padding(6, 3, 6, 0);
+            return separator;
+        }
+
+        private void ShowAbout()
+        {
+            using (AboutDialog dialog = new AboutDialog())
+                dialog.ShowDialog(this);
         }
 
         private void ResizeFileColumns()
