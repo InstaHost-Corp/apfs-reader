@@ -65,6 +65,14 @@ jobs:
           nuget install Microsoft.NETFramework.ReferenceAssemblies.net40 `
             -Version 1.0.3 -OutputDirectory packages -DirectDownload
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $version = "${{ github.ref_name }}".TrimStart("v")
+            $assemblyInfo = "src\APFSReader\Properties\AssemblyInfo.cs"
+            (Get-Content $assemblyInfo) `
+              -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$version.0`")" `
+              -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$version.0`")" |
+              Set-Content $assemblyInfo
+          }
           $frameworkRoot = "$env:GITHUB_WORKSPACE\packages\Microsoft.NETFramework.ReferenceAssemblies.net40.1.0.3\build"
           msbuild src/APFSReader/APFSReader.csproj /m `
             /p:Configuration=Release /p:Platform=${{ matrix.arch }} `
@@ -92,6 +100,9 @@ jobs:
           Copy-Item "src\APFSReader\bin\${{ matrix.arch }}\Release\APFSReader.exe" "dist\$name\"
           Copy-Item "build\backend-${{ matrix.arch }}\bin\apfs_backend.exe" "dist\$name\"
           Copy-Item README.md,LICENSE,THIRD-PARTY-NOTICES.md "dist\$name\"
+          Copy-Item "third_party\paragon_apfs_sdk_ce\LICENSE.txt" `
+            "dist\$name\PARAGON-APFS-SDK-LICENSE.txt"
+          Copy-Item "openssl-1.1.1w\LICENSE" "dist\$name\OPENSSL-LICENSE.txt"
           Compress-Archive -Path "dist\$name" -DestinationPath "dist\$name.zip"
 
       - uses: actions/upload-artifact@v4
