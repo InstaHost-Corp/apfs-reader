@@ -21,6 +21,14 @@ jobs:
           - arch: x64
             openssl_target: VC-WIN64A
     runs-on: windows-latest
+    # The release environment is the only place the Azure Artifact Signing federated
+    # credential trusts (see the federated credential subject on the signing service
+    # principal). Every run gets the environment so a fork or unreviewed branch cannot
+    # authenticate; only main and tags actually have anything to sign.
+    environment: release
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -89,6 +97,28 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           .\ParserTests.exe
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Azure login
+        if: github.ref_type == 'tag'
+        uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Sign GUI and backend executables
+        if: github.ref_type == 'tag'
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: https://eus.codesigning.azure.net/
+          signing-account-name: instahost
+          certificate-profile-name: instahost-public
+          files: |
+            ${{ github.workspace }}\src\APFSReader\bin\${{ matrix.arch }}\Release\APFSReader.exe
+            ${{ github.workspace }}\build\backend-${{ matrix.arch }}\bin\apfs_backend.exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.digicert.com
+          timestamp-digest: SHA256
 
       - name: Package portable release
         shell: pwsh

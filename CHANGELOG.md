@@ -2,6 +2,24 @@
 
 All notable changes to APFS Reader for Windows.
 
+## 1.2.1 — 2026-08-16
+
+### Security
+
+- Both the GUI (`APFSReader.exe`) and the native read-only backend
+  (`apfs_backend.exe`) are now Authenticode signed during the GitHub Actions
+  release build, using the same Azure Artifact Signing (Trusted Signing)
+  certificate used for the other InstaHost desktop tools: `CN=MyTechie`,
+  issued by Microsoft ID Verified CS AOC CA 04, RFC 3161 timestamped. The
+  About window's own signature check now reports both files as signed rather
+  than unsigned, and Windows SmartScreen no longer needs to be dismissed on
+  first run.
+- `AssemblyCompany` changed from "Patrick Hamid" to "MyTechie" to match the
+  signing certificate's subject; Windows shows this value as the file's
+  publisher, so it has to agree with the certificate or the signature reads
+  as a mismatch. Product branding is unaffected: the application still
+  presents itself as "APFS Reader for Windows".
+
 ## 1.2.0 — 2026-08-10
 
 ### What's new
