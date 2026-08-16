@@ -45,6 +45,11 @@ namespace APFSReader
             ForeColor = TextColor;
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             BuildLayout();
+
+            // Repaints scroll bars, list headers and the title bar dark, and forces every child
+            // control created above onto the same palette it already used, so nothing native
+            // slips back to a bright default.
+            Theme.Apply(this);
         }
 
         private void BuildLayout()

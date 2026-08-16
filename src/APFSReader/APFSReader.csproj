@@ -8,6 +8,10 @@
     <RootNamespace>APFSReader</RootNamespace>
     <AssemblyName>APFSReader</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <!-- Theme.cs (ported verbatim from user-account-migrator) uses pattern-matching switches
+         and null-coalescing assignment, which need C# 8+ even though the target framework
+         itself is unchanged. -->
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>

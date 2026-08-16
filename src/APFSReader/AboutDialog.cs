@@ -19,40 +19,40 @@ namespace APFSReader
             MinimizeBox = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
-            ClientSize = new Size(486, 356);
+            ClientSize = new Size(486, 388);
             BackColor = Theme.Background;
             ForeColor = Theme.Text;
             Font = new Font("Segoe UI", 9F);
 
             Label eyebrow = NewLabel("INSTA.HOST TOOLING", 8F, FontStyle.Bold, Theme.Accent);
-            eyebrow.Location = new Point(20, 16);
+            eyebrow.Location = new Point(20, 20);
 
             Label title = NewLabel(BuildInfo.Product, 14F, FontStyle.Bold, Theme.Text);
-            title.Location = new Point(19, 34);
+            title.Location = new Point(19, 40);
 
             Label version = NewLabel(
                 "Version " + BuildInfo.Version + "   \u00B7   built " + BuildInfo.BuildDate,
                 9F, FontStyle.Regular, Theme.Muted);
-            version.Location = new Point(20, 64);
+            version.Location = new Point(20, 70);
 
             Label licence = NewLabel(BuildInfo.Licence, 9F, FontStyle.Regular, Theme.Text);
-            licence.Location = new Point(20, 90);
+            licence.Location = new Point(20, 98);
 
             Label publisher = NewLabel(
                 "Publisher: " + BuildInfo.Publisher + "\r\nAuthor: " + BuildInfo.Author + "\r\n" + BuildInfo.Copyright,
                 9F, FontStyle.Regular, Theme.Text);
             publisher.AutoSize = false;
-            publisher.Location = new Point(20, 114);
+            publisher.Location = new Point(20, 124);
             publisher.Size = new Size(446, 54);
 
             Label checksumLabel = NewLabel(
                 "SHA-256 of this file - compare it with the download page:",
                 8.5F, FontStyle.Regular, Theme.Muted);
-            checksumLabel.Location = new Point(20, 170);
+            checksumLabel.Location = new Point(20, 192);
 
             TextBox checksum = new TextBox();
             checksum.Text = BuildInfo.FileSha256() ?? "unavailable";
-            checksum.Location = new Point(20, 190);
+            checksum.Location = new Point(20, 212);
             checksum.Size = new Size(446, 40);
             checksum.ReadOnly = true;
             checksum.Multiline = true;
@@ -64,11 +64,11 @@ namespace APFSReader
             Label path = NewLabel(BuildInfo.ExecutablePath ?? string.Empty, 8.5F, FontStyle.Regular, Theme.Muted);
             path.AutoSize = false;
             path.AutoEllipsis = true;
-            path.Location = new Point(20, 236);
+            path.Location = new Point(20, 262);
             path.Size = new Size(446, 18);
 
             FlowLayoutPanel links = new FlowLayoutPanel();
-            links.Location = new Point(16, 264);
+            links.Location = new Point(16, 292);
             links.Size = new Size(454, 30);
             links.BackColor = Color.Transparent;
             links.FlowDirection = FlowDirection.LeftToRight;
@@ -84,7 +84,7 @@ namespace APFSReader
             Button close = new Button();
             close.Text = "Close";
             close.DialogResult = DialogResult.OK;
-            close.Bounds = new Rectangle(374, 308, 92, 32);
+            close.Bounds = new Rectangle(374, 336, 92, 32);
             close.FlatStyle = FlatStyle.Flat;
             close.FlatAppearance.BorderSize = 1;
             close.FlatAppearance.BorderColor = Theme.Accent;
@@ -102,6 +102,8 @@ namespace APFSReader
             });
             AcceptButton = close;
             CancelButton = close;
+
+            Theme.Apply(this);
         }
 
         private static Label NewLabel(string text, float size, FontStyle style, Color color)

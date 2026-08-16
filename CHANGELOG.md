@@ -2,6 +2,27 @@
 
 All notable changes to APFS Reader for Windows.
 
+## 1.2.2 — Unreleased
+
+### Fixed
+
+- Replaced the 1.2.0 hand-rounded palette stub with the canonical InstaHost
+  desktop theme ported verbatim from `user-account-migrator`'s `Ui/Theme.cs`
+  (identical to the theme already shared by Simple Scanner and PackPilot).
+  The window chrome Windows draws itself — scroll bars, the list view header,
+  and the title bar — is now switched to dark via the same `DarkMode` Win32
+  hooks the other tools use; previously only the flat control colours were
+  themed and the native chrome stayed light. `MainForm` and `AboutDialog` keep
+  their existing field names (`Theme.Background`, `Theme.Accent`, etc.), which
+  are now aliases onto the shared token set rather than a second palette.
+- Fixed squished spacing in the About window: increased dialog height and the
+  gaps between the version line, licence text, publisher block, checksum
+  field, executable path and link row so text no longer crowds against the
+  row below it.
+- `APFSReader.csproj` now pins `LangVersion` to 8.0 so the ported theme file's
+  pattern-matching switch and null-coalescing assignment compile against the
+  project's existing .NET Framework 4.0 target.
+
 ## 1.2.1 — 2026-08-16
 
 ### Security
