@@ -30,13 +30,13 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
         with:
           arch: ${{ matrix.arch }}
 
-      - uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
 
       - name: Build static OpenSSL
         shell: pwsh
@@ -100,7 +100,7 @@ jobs:
 
       - name: Azure login
         if: github.ref_type == 'tag'
-        uses: azure/login@v3
+        uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -108,7 +108,7 @@ jobs:
 
       - name: Sign GUI and backend executables
         if: github.ref_type == 'tag'
-        uses: azure/artifact-signing-action@v2
+        uses: azure/artifact-signing-action@c7ab2a863ab5f9a846ddb8265964877ef296ee82 # v2
         with:
           endpoint: https://eus.codesigning.azure.net/
           signing-account-name: instahost
@@ -136,14 +136,14 @@ jobs:
           Copy-Item "openssl-1.1.1w\LICENSE" "dist\$name\OPENSSL-LICENSE.txt"
           Compress-Archive -Path "dist\$name" -DestinationPath "dist\$name.zip"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: APFSReader-win-${{ matrix.arch }}
           path: dist/*.zip
 
       - name: Publish GitHub release
         if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           generate_release_notes: true
           files: dist/*.zip
